@@ -1,0 +1,13 @@
+name: "Setup Roblox Studio"
+description: "Install Roblox Studio to use in your CI/CD workflow"
+author: "Dervex"
+
+branding:
+  icon: "download"
+  color: "blue"
+
+runs:
+  using: composite
+  steps:
+    - run: $GITHUB_ACTION_PATH/script.sh
+      shell: bash
