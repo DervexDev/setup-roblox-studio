@@ -6,8 +6,22 @@ branding:
   icon: "download"
   color: "blue"
 
+inputs:
+  login:
+    description: "Your account username/email/phone"
+    required: false
+    default: ""
+  password:
+    description: "Your account password"
+    required: false
+    default: ""
+  keep-open:
+    description: "Whether to keep Roblox Studio open after installation is complete"
+    required: false
+    default: "false"
+
 runs:
   using: composite
   steps:
-    - run: $GITHUB_ACTION_PATH/script.sh
+    - run: ${{ github.action_path }}/script.sh ${{ inputs.login }} ${{ inputs.password }} ${{ inputs.keep-open }}
       shell: bash

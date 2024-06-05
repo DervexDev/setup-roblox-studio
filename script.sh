@@ -6,7 +6,7 @@ function Step(){
 }
 
 URL=https://setup.rbxcdn.com/mac/RobloxStudio.dmg
-temp=/tmp/`openssl rand -base64 10 | tr -dc '[:alnum:]'`.dmg
+temp=/tmp/`openssl rand -base64 10 | tr -dc "[:alnum:]"`.dmg
 
 #================#
 Step "Downloading..."
@@ -41,11 +41,50 @@ app=`find $app_volume/. -name *.app -maxdepth 1 -type d -print0`
 echo "Copying the app from $app to /Applications/RobloxStudioInstaller.app"
 cp -r $app /Applications
 
-echo "Running installer"
+echo "Running the installer"
 open -W /Applications/RobloxStudioInstaller.app
 
-echo "Stopping Roblox Studio"
-pkill -x RobloxStudio
+if [ "$1" != "" ] && [ "$2" != "" ]; then
+  echo "Logging in"
+
+  osascript -e "
+  tell application \"System Events\"
+    repeat
+	  	if process \"RobloxStudio\" exists then
+	  		exit repeat
+	  	end if
+
+	  	delay 1
+	  end repeat
+	
+	  delay 5
+
+	  tell process \"RobloxStudio\"
+	  	set frontmost to true
+	  	perform action \"AXRaise\" of window 1
+	  	set position of window 1 to {0, 0}
+
+	  	delay 1
+
+	  	click at {100, 210}
+	  	keystroke \"$1\"
+
+	  	click at {100, 260}
+	  	keystroke \"$2\"
+
+	  	click at {100, 310}
+	  end tell
+  end tell"
+
+  if [ $3 != true ]; then
+    sleep 7
+    echo "Stopping Roblox Studio"
+    pkill -x RobloxStudio
+  fi
+elif [ $3 != true ]; then
+  echo "Stopping Roblox Studio"
+  pkill -x RobloxStudio
+fi
 
 #================#
 Step "Cleaning up..."
